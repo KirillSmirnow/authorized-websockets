@@ -1,0 +1,21 @@
+<html lang="en">
+<head>
+    <title>Authorized WebSockets</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+</head>
+<body>
+<div id="container"></div>
+<script>
+    const sockJs = new SockJS('/updates')  // HTTP handshake, WebSocket session started
+    const client = Stomp.over(sockJs)
+    client.connect({'Authorization': 'Bearer 345'}, () => {        // CONNECT to STOMP
+        client.subscribe("/users/Alice/updates", message => {      // SUBSCRIBE to a topic
+            const newElement = document.createElement('div')       // process a message from the topic
+            newElement.textContent = message.body
+            document.getElementById('container').appendChild(newElement)
+        });
+    });
+</script>
+</body>
+</html>
